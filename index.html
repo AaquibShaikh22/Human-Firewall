@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human Firewall — Can You Outsmart a Hacker?</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════
+       ANIMATED BACKGROUND CANVAS
+  ════════════════════════════════════════ -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ════════════════════════════════════════
+       TOP NAVIGATION BAR
+  ════════════════════════════════════════ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </span>
+      <span class="logo-text">HUMAN <span class="accent">FIREWALL</span></span>
+    </div>
+    <ul class="nav-links" role="list">
+      <li><button class="nav-btn active" data-section="dashboard" aria-current="page">Dashboard</button></li>
+      <li><button class="nav-btn" data-section="game">Train</button></li>
+      <li><button class="nav-btn" data-section="leaderboard">Leaderboard</button></li>
+      <li><button class="nav-btn" data-section="about">About</button></li>
+    </ul>
+    <div class="nav-controls">
+      <button class="icon-btn" id="sound-btn" title="Toggle sound" aria-label="Toggle sound effects">
+        <svg id="sound-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      </button>
+      <button class="icon-btn danger" id="reset-btn" title="Reset progress" aria-label="Reset all progress">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.8"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       SECTION: DASHBOARD
+  ════════════════════════════════════════ -->
+  <section id="section-dashboard" class="section active" aria-label="Dashboard">
+    <div class="container">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-text">
+          <h1 class="hero-title">HUMAN <span class="neon-green">FIREWALL</span></h1>
+          <p class="hero-tagline">Think Before You Click.</p>
+          <p class="hero-sub">Master the art of spotting phishing, scams, and social-engineering attacks through interactive challenges.</p>
+          <button class="btn btn-primary btn-lg" id="start-training-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Start Training
+          </button>
+        </div>
+        <div class="hero-badge-display" aria-label="Security shield illustration" aria-hidden="true">
+          <div class="shield-anim">
+            <svg width="120" height="140" viewBox="0 0 120 140">
+              <defs>
+                <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.8"/>
+                  <stop offset="100%" style="stop-color:#7c5cd8;stop-opacity:0.8"/>
+                </linearGradient>
+              </defs>
+              <path d="M60 8 L108 28 L108 72 Q108 110 60 130 Q12 110 12 72 L12 28 Z" fill="none" stroke="url(#shieldGrad)" stroke-width="3"/>
+              <path d="M60 22 L96 38 L96 72 Q96 102 60 118 Q24 102 24 72 L24 38 Z" fill="rgba(0,255,136,0.05)" stroke="rgba(0,255,136,0.3)" stroke-width="1"/>
+              <text x="60" y="82" text-anchor="middle" font-size="36" fill="url(#shieldGrad)">🛡</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid" role="list" aria-label="Player statistics">
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon neon-green-bg" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Score</span>
+            <span class="stat-value" id="dash-score">0</span>
+          </div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon neon-blue-bg" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="dash-completed">0 / 30</span>
+          </div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon neon-purple-bg" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Current Level</span>
+            <span class="stat-value" id="dash-level">Cyber Rookie</span>
+          </div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon neon-green-bg" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Badges Earned</span>
+            <span class="stat-value" id="dash-badges">0 / 6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall Progress -->
+      <div class="card">
+        <h2 class="card-title">Overall Progress</h2>
+        <div class="progress-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Overall training progress" id="overall-progress-bar-wrap">
+          <div class="progress-bar" id="overall-progress-bar" style="width:0%"></div>
+        </div>
+        <p class="progress-label" id="overall-progress-label">0% Complete — Keep going!</p>
+        <p class="level-next" id="level-next-label">Next level: <strong>Scam Spotter</strong> — needs 300 more points</p>
+      </div>
+
+      <!-- Badges Section -->
+      <div class="card">
+        <h2 class="card-title">Achievement Badges</h2>
+        <div class="badges-grid" id="badges-grid" aria-label="Achievement badges" role="list"></div>
+      </div>
+
+      <!-- Daily Tip -->
+      <div class="card tip-card">
+        <div class="tip-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <h2 class="card-title" style="margin:0">Daily Cybersecurity Tip</h2>
+        </div>
+        <p id="daily-tip-text" class="tip-text"></p>
+        <button class="btn btn-outline" id="new-tip-btn">New Tip</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION: GAME / TRAINING
+  ════════════════════════════════════════ -->
+  <section id="section-game" class="section" aria-label="Training game">
+    <div class="container">
+
+      <!-- Category Selection Screen -->
+      <div id="game-category-screen">
+        <h2 class="section-title">Choose Your Training</h2>
+        <p class="section-sub">Select a category to begin. Complete all challenges to earn badges.</p>
+        <div class="category-grid">
+          <button class="category-card" data-category="phishing" aria-label="Phishing Email Detector — 10 challenges">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h3>Phishing Email Detector</h3>
+            <p>Can you spot the fake emails before they trick you?</p>
+            <span class="cat-count" id="cat-count-phishing">0 / 10</span>
+            <div class="cat-progress-bar"><div class="cat-progress-fill" id="cat-fill-phishing" style="width:0%"></div></div>
+          </button>
+          <button class="category-card" data-category="fakelogin" aria-label="Fake Login Detector — 5 challenges">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82d4" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3>Fake Login Detector</h3>
+            <p>Identify the fraudulent login page before entering credentials.</p>
+            <span class="cat-count" id="cat-count-fakelogin">0 / 5</span>
+            <div class="cat-progress-bar"><div class="cat-progress-fill" id="cat-fill-fakelogin" style="width:0%"></div></div>
+          </button>
+          <button class="category-card" data-category="social" aria-label="Social Engineering — 10 challenges">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7c5cd8" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Social Engineering</h3>
+            <p>Recognize manipulation tactics used by attackers.</p>
+            <span class="cat-count" id="cat-count-social">0 / 10</span>
+            <div class="cat-progress-bar"><div class="cat-progress-fill" id="cat-fill-social" style="width:0%"></div></div>
+          </button>
+        </div>
+
+        <!-- Mode Selection -->
+        <div class="card mode-card">
+          <h3 class="card-title">Challenge Mode</h3>
+          <div class="mode-toggle" role="radiogroup" aria-label="Select challenge mode">
+            <button class="mode-btn active" data-mode="learn" role="radio" aria-checked="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Learn Mode
+            </button>
+            <button class="mode-btn" data-mode="timed" role="radio" aria-checked="false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Timed Challenge
+            </button>
+          </div>
+          <p class="mode-desc" id="mode-desc">Learn Mode: No timer. Take your time and read explanations carefully.</p>
+        </div>
+      </div>
+
+      <!-- Active Quiz Screen -->
+      <div id="game-quiz-screen" class="hidden" role="main" aria-label="Quiz question">
+        <div class="quiz-header">
+          <button class="btn btn-outline btn-sm" id="quit-quiz-btn" aria-label="Quit this quiz">← Back</button>
+          <div class="quiz-meta">
+            <span id="quiz-category-label" class="quiz-cat-label"></span>
+            <span id="quiz-progress-label">Question 1 / 10</span>
+          </div>
+          <div id="timer-display" class="timer hidden" aria-live="polite" aria-atomic="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="timer-value">30</span>s
+          </div>
+        </div>
+
+        <div class="quiz-progress-bar-wrap" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="quiz-progress-wrap">
+          <div class="quiz-progress-bar" id="quiz-progress-bar" style="width:0%"></div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card" id="question-card">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Answer Feedback -->
+        <div id="answer-feedback" class="feedback-card hidden" aria-live="polite"></div>
+
+        <!-- Navigation -->
+        <div class="quiz-nav" id="quiz-nav">
+          <button class="btn btn-primary" id="next-question-btn" disabled>Next Question →</button>
+        </div>
+      </div>
+
+      <!-- Final Results Screen -->
+      <div id="game-results-screen" class="hidden" aria-label="Quiz results">
+        <div class="results-card">
+          <div class="results-icon" aria-hidden="true">🎉</div>
+          <h2 id="results-title">Training Complete!</h2>
+          <div class="results-grid">
+            <div class="result-stat"><span class="result-label">Questions</span><span class="result-val" id="res-total">0</span></div>
+            <div class="result-stat"><span class="result-label">Correct</span><span class="result-val neon-green" id="res-correct">0</span></div>
+            <div class="result-stat"><span class="result-label">Incorrect</span><span class="result-val neon-red" id="res-incorrect">0</span></div>
+            <div class="result-stat"><span class="result-label">Accuracy</span><span class="result-val" id="res-accuracy">0%</span></div>
+            <div class="result-stat"><span class="result-label">Points Earned</span><span class="result-val neon-green" id="res-points">+0</span></div>
+            <div class="result-stat"><span class="result-label">Total Score</span><span class="result-val" id="res-total-score">0</span></div>
+          </div>
+          <div id="res-new-badges" class="new-badges-wrap hidden"></div>
+          <p id="res-performance-msg" class="perf-msg"></p>
+          <p id="res-next-cat" class="next-cat-msg"></p>
+          <div class="results-actions">
+            <button class="btn btn-primary" id="retry-quiz-btn">Retry Quiz</button>
+            <button class="btn btn-outline" id="back-to-cats-btn">Choose Category</button>
+            <button class="btn btn-outline" id="review-answers-btn">Review Answers</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Answers Screen -->
+      <div id="game-review-screen" class="hidden" aria-label="Answer review">
+        <div class="review-header">
+          <h2>Answer Review</h2>
+          <button class="btn btn-outline btn-sm" id="back-from-review-btn">← Back to Results</button>
+        </div>
+        <div id="review-list"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION: LEADERBOARD
+  ════════════════════════════════════════ -->
+  <section id="section-leaderboard" class="section" aria-label="Leaderboard">
+    <div class="container">
+      <h2 class="section-title">Leaderboard</h2>
+      <p class="section-sub notice-label">⚠️ This is a local leaderboard stored on your device. Scores are not shared across devices or players.</p>
+      <div class="card">
+        <div class="lb-submit-row">
+          <label for="lb-nickname-input" class="sr-only">Your display nickname</label>
+          <input type="text" id="lb-nickname-input" class="lb-input" placeholder="Enter your display nickname" maxlength="20" aria-label="Display nickname for leaderboard" />
+          <button class="btn btn-primary" id="lb-submit-btn">Submit Score</button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="lb-table" aria-label="Leaderboard scores">
+          <thead>
+            <tr><th>#</th><th>Player</th><th>Score</th><th>Level</th></tr>
+          </thead>
+          <tbody id="lb-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION: ABOUT
+  ════════════════════════════════════════ -->
+  <section id="section-about" class="section" aria-label="About">
+    <div class="container">
+      <h2 class="section-title">About Human Firewall</h2>
+      <div class="about-grid">
+        <div class="card">
+          <h3 class="card-title">🎯 Project Objective</h3>
+          <p>Human Firewall is an interactive cybersecurity-awareness game designed to teach users how to recognize phishing emails, fake login pages, online scams, and social-engineering attacks — the most common threats targeting everyday people.</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🛠 Technologies Used</h3>
+          <ul class="about-list">
+            <li>HTML5 — Structure and content</li>
+            <li>CSS3 — Styling, animations, responsive layout</li>
+            <li>JavaScript (ES6+) — Game logic, scoring, interactions</li>
+            <li>localStorage — Save progress across sessions</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🕹 How To Play</h3>
+          <ol class="about-list">
+            <li>Open the Dashboard and click <strong>Start Training</strong>.</li>
+            <li>Select a challenge category: Phishing Emails, Fake Login Pages, or Social Engineering.</li>
+            <li>Choose Learn Mode (no timer) or Timed Challenge.</li>
+            <li>Read each scenario carefully and choose the safest response.</li>
+            <li>Earn 100 points per correct answer and unlock badges.</li>
+            <li>Review explanations to learn why answers are correct.</li>
+            <li>Complete all categories to become a Human Firewall Elite.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3 class="card-title">📚 Educational Purpose</h3>
+          <p>This project is built for cybersecurity awareness education. All scenarios are fictional simulations. No real credentials, OTPs, passwords, or banking information are collected or required at any point.</p>
+        </div>
+        <div class="card disclaimer-card">
+          <h3 class="card-title">⚠️ Disclaimer</h3>
+          <p>All email addresses, domain names, brand names, and scenarios in this game are entirely fictional and created for educational purposes only. Any resemblance to real persons, organizations, or websites is coincidental. This application does not send, receive, or store any personal data on external servers. All progress is saved locally on your own device via localStorage.</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">👨‍💻 Developer</h3>
+          <p>Built as a college project for a BCA (Bachelor of Computer Applications) program. Designed to demonstrate full-stack front-end development, UX design, and applied cybersecurity knowledge.</p>
+          <p style="margin-top:8px; color: var(--muted);">[Developer name and institution to be filled in by the student.]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       MODAL: RESET CONFIRMATION
+  ════════════════════════════════════════ -->
+  <div id="reset-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
+    <div class="modal-box">
+      <h3 id="reset-modal-title" class="modal-title">Reset All Progress?</h3>
+      <p>This will delete your score, badges, completed challenges, and leaderboard entries. This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-danger" id="confirm-reset-btn">Yes, Reset Everything</button>
+        <button class="btn btn-outline" id="cancel-reset-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       TOAST NOTIFICATION
+  ════════════════════════════════════════ -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
